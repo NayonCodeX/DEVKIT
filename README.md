@@ -1,218 +1,437 @@
-# DEVKIT — Build Smarter. Code Better.
+<div align="center">
+
+<img src="docs/screenshots/00-hero.png" alt="DEVKIT — Build Smarter. Code Better." width="100%" />
+
+<br/>
+
+# DEVKIT
+
+### Build Smarter. Code Better.
 
 A professional, mobile-first developer toolkit + AI coding workspace, built as a PWA-ready Next.js application.
 
-- **Developer:** Nayon Ahmed
-- **Brand credit:** NCX / NayonCodeX (About section only)
-- **Version:** 1.0.0
-- **Platform:** Mobile-first web app · PWA · Android-ready (TWA-able)
+<br/>
+
+![Version](https://img.shields.io/badge/version-1.0.0-9b7cff?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-4dd4ff?style=flat-square)
+![PWA](https://img.shields.io/badge/PWA-ready-22c55e?style=flat-square)
+![APK](https://img.shields.io/badge/APK-TWA%20ready-f59e0b?style=flat-square)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?style=flat-square)
+![Tailwind](https://img.shields.io/badge/Tailwind-4-06b6d4?style=flat-square)
+
+<br/>
+
+**30 real developer tools · 10 AI modes · In-app GitHub push · IndexedDB workspace · 5 themes · Bangla + English**
+
+<br/>
+
+</div>
 
 ---
 
-## Features
+## ✨ What is DEVKIT?
 
-### Home Dashboard
-Welcome section, global tool search, quick-access tools, recent projects, recent activity, favorites, AI shortcut, GitHub connection status (truthful — never faked), workspace overview, theme switcher, and in-app notifications.
+DEVKIT is a single-page PWA that bundles the day-to-day tools a developer actually uses — JSON formatter, JWT decoder, SHA hashes, UUID, QR generator/scanner, regex tester, color tools, diff checker — plus a **real AI coding assistant** (10 modes), a **local-first code workspace** with version history, and **GitHub integration** that pushes commits straight from the app.
 
-### Developer Tools (all offline, all real)
-**Code & Data:** JSON Formatter & Validator, XML Formatter, HTML Formatter, CSS Formatter, JavaScript Formatter, YAML Formatter, SQL Formatter, Markdown Preview.
+It is **not a static demo**: every tool produces real output, the AI calls a real backend proxy, and the GitHub flow uses real OAuth or PAT authentication.
 
-**Encoding:** Base64 (UTF-8 safe), URL Encode/Decode, HTML Entity Encode/Decode, JWT Decoder (signature **not** verified — tool states this), Unicode Converter, Hex Converter.
+<br/>
 
-**Security & Utilities:** SHA-256 / 384 / 512 (Web Crypto), UUID Generator (crypto.randomUUID), Secure Password Generator, Random String Generator, Regex Tester (live matches + highlight), Timestamp Converter.
+## 🖼️ Screenshots
 
-**Design:** HEX / RGB / HSL Converter, Color Picker, Gradient Generator, CSS Shadow Generator, Border Radius Generator, CSS Unit Converter.
+<table>
+  <tr>
+    <td width="50%" align="center"><b>Home Dashboard</b></td>
+    <td width="50%" align="center"><b>Developer Tools (30 tools)</b></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><img src="docs/screenshots/01-home.png" alt="Home" width="100%"/></td>
+    <td width="50%" align="center"><img src="docs/screenshots/02-tools.png" alt="Tools" width="100%"/></td>
+  </tr>
+  <tr><td colspan="2">&nbsp;</td></tr>
+  <tr>
+    <td width="50%" align="center"><b>AI Assistant (10 modes)</b></td>
+    <td width="50%" align="center"><b>Code Workspace (IndexedDB)</b></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><img src="docs/screenshots/03-ai.png" alt="AI" width="100%"/></td>
+    <td width="50%" align="center"><img src="docs/screenshots/04-workspace.png" alt="Workspace" width="100%"/></td>
+  </tr>
+  <tr><td colspan="2">&nbsp;</td></tr>
+  <tr>
+    <td width="50%" align="center"><b>GitHub (in-app push)</b></td>
+    <td width="50%" align="center"><b>Settings (5 themes + Bangla)</b></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><img src="docs/screenshots/05-github.png" alt="GitHub" width="100%"/></td>
+    <td width="50%" align="center"><img src="docs/screenshots/06-settings.png" alt="Settings" width="100%"/></td>
+  </tr>
+</table>
 
-**Other:** QR Code Generator (real `qrcode` library), QR Scanner (real `jsqr` + camera), Text Diff Checker (line-based LCS), Word / Character Counter.
+<br/>
 
-### AI Assistant
-10 modes: Chat, Code Generator, Code Explainer, Code Reviewer, Bug Assistant, Code Fixer, Regex Builder, SQL Assistant, Documentation Generator, Code Translation Assistant. AI calls go through a secure backend proxy — the API key never leaves the server. When AI is not configured, every AI screen shows a clear configuration message. Offline tools continue working without AI.
+## 🎨 Design System
 
-### AI API Manager
-Add / edit / delete providers (OpenAI, Gemini, Anthropic, or any OpenAI-compatible custom endpoint). Enable/disable, set default, test connection, revoke key, request history (per-request status). Keys are stored **only on the backend** (in-memory for the demo; production should use a real secret manager). The browser stores only metadata plus a boolean "has key" flag.
+DEVKIT ships with **5 built-in themes** (default: Premium Dark) and a custom theme slot for future expansion. Each theme uses a navy background with purple → cyan accent gradient for a premium feel.
 
-### Code Workspace & Project Manager
-Create / open / delete projects. Create / rename / delete files and folders. Edit code in a touch-friendly textarea editor with tab-to-indent and Ctrl/Cmd+S to save. Auto-save with configurable delay. Find/Replace. IndexedDB persistence. File version history with restore. Project import/export (single JSON) and full backup/restore.
+| Theme | Background | Primary | Accent |
+|-------|-----------|---------|--------|
+| **Premium Dark** (default) | `#1a1f3a` navy | `#9b7cff` purple | `#4dd4ff` cyan |
+| **Light** | `#fafafa` | `#6c2bd9` | `#1e9bd6` |
+| **Midnight** | `#0a0e2a` deep | `#a07cff` | `#56b8ff` |
+| **Ocean** | `#133355` | `#4da3d9` | `#56d9e6` |
+| **Purple** | `#22103f` | `#9a4dff` | `#ff6db3` |
 
-### GitHub Integration
-Real OAuth flow via the backend. List authorized repositories, list branches, fetch file content, commit & push with the resulting commit URL shown. Auto-Push master switch with allowed-repo and allowed-branch lists, plus a `Protect main` confirmation gate. Tokens stored only server-side in an HTTP-only session cookie — never in browser localStorage or exposed to client code.
+Theme switching is instant (via `data-theme` attribute), persists in localStorage, and avoids flash-of-unstyled-content via a pre-paint inline script.
 
-### Personalization & Settings
-5 built-in themes (Premium Dark, Light, Midnight, Ocean, Purple) with `data-theme` attributes. Bangla + English language toggle. Font-size slider. Editor preferences (auto-save, tab size). AI and GitHub settings. Privacy controls. Backup/restore. About page.
+<br/>
 
-### PWA & Offline
-Web App Manifest, service worker (stale-while-revalidate for shell, network-first for navigation, cache-first for static assets, **no** caching of `/api/*` or any credential-bearing response). Installable on Android, iOS, and desktop. Offline shell works; AI and GitHub features require network and configuration.
+## 🛠️ Developer Tools (30 tools, all real, all offline)
 
----
+<details open>
+<summary><b>Code &amp; Data (8)</b></summary>
 
-## Tech stack
+- **JSON Formatter & Validator** — pretty-print, minify, validate with line:col error reporting
+- **XML Formatter** — pretty-print XML
+- **HTML Formatter** — basic indentation
+- **CSS Formatter** — indent CSS rules consistently
+- **JavaScript Formatter** — line-break after statements
+- **YAML Formatter** — normalize spacing
+- **SQL Formatter** — uppercase keywords + break clauses
+- **Markdown Preview** — render small Markdown subset to HTML
+</details>
 
-- **Frontend:** Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · shadcn/ui · Lucide · Zustand · IndexedDB
-- **Backend:** Next.js API routes (Node runtime) — same deployment, no separate server process needed
-- **PWA:** `public/devkit/manifest.json` + `public/devkit-sw.js`
-- **Crypto:** Web Crypto (SubtleCrypto) for SHA-2, `crypto.randomUUID()` for UUIDs
-- **QR:** `qrcode` (generation) + `jsqr` (scanning)
+<details open>
+<summary><b>Encoding (6)</b></summary>
 
----
+- **Base64 Encode/Decode** — UTF-8 safe
+- **URL Encode/Decode** — encodeURIComponent / decodeURIComponent
+- **HTML Entity Encode/Decode** — escape `<`, `>`, `&`, `"`, `'`
+- **JWT Decoder** — decodes header & payload (signature **NOT verified** — tool states this)
+- **Unicode Converter** — text ↔ `\uXXXX` escapes
+- **Hex Converter** — text ↔ hex bytes (UTF-8)
+</details>
 
-## Project structure
+<details open>
+<summary><b>Security &amp; Utilities (6)</b></summary>
+
+- **SHA-256 / 384 / 512** — Web Crypto SubtleCrypto
+- **UUID Generator** — RFC 4122 v4 via `crypto.randomUUID()`
+- **Password Generator** — cryptographically-secure, with strength meter
+- **Random String Generator** — custom charset
+- **Regex Tester** — live matches with groups + highlight
+- **Timestamp Converter** — Unix ↔ ISO ↔ local, both directions
+</details>
+
+<details open>
+<summary><b>Design (6)</b></summary>
+
+- **HEX / RGB / HSL Converter** — bidirectional
+- **Color Picker** — native color picker with HEX/RGB copy
+- **Gradient Generator** — linear/radial CSS gradient
+- **CSS Shadow Generator** — visual box-shadow
+- **Border Radius Generator** — per-corner visual control
+- **CSS Unit Converter** — px ↔ rem ↔ em ↔ %
+</details>
+
+<details open>
+<summary><b>Other (4)</b></summary>
+
+- **QR Code Generator** — real `qrcode` library, PNG download
+- **QR Scanner** — real `jsqr` + camera (HTTPS required)
+- **Text Diff Checker** — line-based LCS with +/− counts
+- **Word / Character Counter** — live counts (words, chars, lines, sentences, paragraphs, reading time)
+</details>
+
+<br/>
+
+## 🤖 AI Assistant (10 modes, secure backend proxy)
+
+The AI section supports **10 specialized modes**:
+
+| Mode | What it does |
+|------|--------------|
+| **AI Chat** | General-purpose coding chat |
+| **AI Code Generator** | Generate code from a description |
+| **AI Code Explainer** | Explain what provided code does |
+| **AI Code Reviewer** | Review code for bugs, style, security |
+| **AI Bug Assistant** | Diagnose a bug from code + error |
+| **AI Code Fixer** | Suggest corrected code (with summary) |
+| **AI Regex Builder** | Generate a regex from a description |
+| **AI SQL Assistant** | Generate or explain SQL |
+| **AI Documentation Generator** | Generate README / JSDoc |
+| **Code Translation Assistant** | Translate code between languages |
+
+### Supported providers
+
+| Provider | Env var | Free tier? |
+|----------|---------|-----------|
+| **OpenRouter** (recommended) | `OPENROUTER_API_KEY` | ✅ yes — 5 free models pre-listed |
+| OpenAI | `OPENAI_API_KEY` | no |
+| Google Gemini | `GEMINI_API_KEY` | yes |
+| Anthropic | `ANTHROPIC_API_KEY` | no |
+| Custom (OpenAI-compatible) | none — set in Settings | depends |
+
+**Pre-listed free OpenRouter models** (click to select in Settings → Add Provider):
+- `nvidia/nemotron-3.5-lightning:free` (default)
+- `cohere/north-mini-code:free`
+- `google/gemma-4-26b-a4b-it:free`
+- `google/gemma-4-31b-it:free`
+- `nvidia/nemotron-3-ultra-550b-a55b:free`
+
+### Security model
+
+- API keys are stored **only on the backend** (server-side, never in browser localStorage/IndexedDB)
+- The browser stores only provider metadata (name, endpoint, model) + a `hasKey` boolean
+- AI calls go through `/api/ai/proxy` — the browser never sees the API key after it's set
+- Setting `OPENROUTER_API_KEY` (or any other provider env var) auto-registers a default provider on the backend
+
+<br/>
+
+## 💻 Code Workspace & Project Manager
+
+- Create / open / delete projects (IndexedDB)
+- Create / rename / delete files and folders
+- Touch-friendly code editor with tab-to-indent and `Ctrl/Cmd+S` to save
+- **Auto-save** with configurable delay (500–10000ms)
+- Find / Replace
+- **File version history** — every save creates a snapshot, restore with one click
+- **Project import / export** as JSON
+- **Full backup / restore** of all IndexedDB data
+
+<br/>
+
+## 🐙 GitHub Integration (in-app push)
+
+Two ways to connect — both keep tokens on the backend, never in the browser:
+
+| | **Option 1: PAT** | **Option 2: OAuth** |
+|---|---|---|
+| Setup | Paste a token (no env needed) | Set 3 env vars + public callback URL |
+| Best for | Single-user / solo dev | Multi-user deployments |
+| Token storage | HTTP-only session cookie on backend | same |
+| Scopes needed | `repo` + `read:user` | requested by OAuth App |
+
+**Verified flow:**
+1. User connects (PAT or OAuth)
+2. App lists authorized repositories
+3. User selects a repository + branch
+4. User fetches a file → edits it → writes a commit message
+5. App pushes via `/api/github/commit` and shows the resulting commit URL
+6. Every push is recorded in the in-app notification system
+
+**Auto Push** is opt-in and gated:
+- Master switch (emergency OFF)
+- Allowed-repo list + allowed-branch list
+- "Protect main" confirmation gate
+- Every push recorded in activity history
+
+<br/>
+
+## ⚙️ Personalization
+
+- **5 themes** + custom theme slot (see Design System above)
+- **2 languages**: English + বাংলা (Bangla)
+- Font size slider (12–20px)
+- Editor preferences (auto-save, tab size)
+- AI + GitHub settings
+- Privacy controls
+- Backup & restore
+- About (DEVKIT, v1.0.0, Build Smarter. Code Better., Nayon Ahamed, NCX / NayonCodeX)
+
+<br/>
+
+## 📱 PWA & APK
+
+### PWA (works today)
+- Web App Manifest at `/devkit/manifest.json`
+- Service worker at `/devkit-sw.js` (stale-while-revalidate for shell, network-first for navigation, **never** caches `/api/*` or credentials)
+- Installable on Android, iOS, and desktop
+- Offline app shell works after first load
+
+### APK (TWA via Bubblewrap — ready to ship)
+
+DEVKIT is structured to be packaged as a Trusted Web Activity (TWA) for the Play Store. Once you deploy the app to a public HTTPS URL:
+
+```bash
+# Install Bubblewrap once
+npm i -g @bubblewrap/cli
+
+# Initialize from the deployed manifest
+bubblewrap init --manifest https://your-deployment.example.com/devkit/manifest.json
+
+# Build the APK / AAB
+bubblewrap build
+```
+
+The output `app-release-signed.apk` can be uploaded to the Play Store. The TWA approach means the entire app is still served from your HTTPS URL — no separate native build to maintain.
+
+See [`docs/APK_BUILD.md`](docs/APK_BUILD.md) for the complete step-by-step guide.
+
+<br/>
+
+## 🚀 Quick start (local development)
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/NayonCodeX/DEVKIT.git
+cd DEVKIT
+
+# 2. Install dependencies
+bun install   # or: npm install
+
+# 3. Configure env (optional — only needed for AI / GitHub)
+cp .env.example .env.local
+# Edit .env.local — simplest path: paste a free OpenRouter key from
+# https://openrouter.ai/keys into OPENROUTER_API_KEY=
+
+# 4. Run the dev server
+bun run dev
+# Open http://localhost:3000
+```
+
+That's it. The OpenRouter key auto-registers an AI provider on the backend — the AI Assistant section is ready immediately. All 30 developer tools work offline with no configuration.
+
+<br/>
+
+## 🔐 Security
+
+DEVKIT was designed with a real security model, not a demo one. Highlights:
+
+- **No secrets in the repo** — `.env`, `.env.local`, and any key file are gitignored
+- **No secrets in the browser** — API keys and GitHub tokens are stored only on the backend
+- **Backend proxy for AI** — the browser sends `providerId + prompt`, the backend adds the key and forwards
+- **HTTP-only session cookie** for GitHub auth (PAT and OAuth both)
+- **Service worker never caches `/api/*`** — no credentials in cache
+- **JWT Decoder explicitly warns** that the signature is **not verified**
+- **Auto Push is opt-in** with allowed-repo + allowed-branch lists + emergency OFF switch
+- **File deletion always requires confirmation**; version restore asks for confirmation and auto-saves the current state first
+
+See [`docs/SECURITY.md`](docs/SECURITY.md) for the full model.
+
+<br/>
+
+## 📦 Tech stack
+
+| Layer | Tech |
+|-------|------|
+| Framework | Next.js 16 (App Router) · React 19 |
+| Language | TypeScript 5 |
+| Styling | Tailwind CSS 4 · shadcn/ui · Lucide icons |
+| State | Zustand (client) · IndexedDB (persistence) |
+| Backend | Next.js API routes (Node runtime) — same deployment |
+| Crypto | Web Crypto (SubtleCrypto) · `crypto.randomUUID()` |
+| QR | `qrcode` (generation) · `jsqr` (scanning) |
+| PWA | Web App Manifest + custom service worker |
+
+<br/>
+
+## 📁 Project structure
 
 ```
 DEVKIT/
 ├── public/
-│   ├── devkit/
-│   │   ├── manifest.json
-│   │   ├── icon-192.png
-│   │   ├── icon-512.png
-│   │   └── icon-512-maskable.png
-│   └── devkit-sw.js
+│   ├── devkit/                    # PWA icons + manifest
+│   └── devkit-sw.js                # service worker
 ├── src/
 │   ├── app/
-│   │   ├── layout.tsx
-│   │   ├── page.tsx              # main shell, navigation, routing
-│   │   ├── globals.css          # themes + design system
+│   │   ├── layout.tsx · page.tsx   # main shell + navigation
+│   │   ├── globals.css            # themes + design system
 │   │   └── api/
-│   │       ├── ai/proxy/        # secure AI proxy
-│   │       ├── ai/test/
-│   │       ├── ai/providers/keys/
-│   │       ├── ai/providers/meta/
-│   │       ├── github/oauth/{start,callback,revoke}/
-│   │       ├── github/session/
-│   │       ├── github/repos/
-│   │       ├── github/branches/
-│   │       ├── github/file/
-│   │       ├── github/commit/
+│   │       ├── ai/proxy/          # secure AI proxy
+│   │       ├── ai/test/           # provider connection test
+│   │       ├── ai/providers/      # list/keys/meta endpoints
+│   │       ├── github/oauth/      # start/callback/revoke
+│   │       ├── github/connect-pat/ # PAT-based connect
+│   │       ├── github/session/repos/branches/file/commit/
 │   │       └── health/
 │   ├── components/
-│   │   ├── ui/                  # shadcn/ui (pre-existing)
+│   │   ├── ui/                    # shadcn/ui (pre-existing)
 │   │   └── devkit/
-│   │       ├── sections/        # home, tools, ai, workspace, github, settings
-│   │       ├── tools/           # 30 tool components + registry
-│   │       ├── activity-log.tsx
-│   │       └── (shared)
+│   │       ├── sections/          # home, tools, ai, workspace, github, settings
+│   │       └── tools/             # 30 tool components + registry
 │   └── lib/
 │       └── devkit/
-│           ├── types.ts
-│           ├── db.ts            # IndexedDB
-│           ├── store.ts         # Zustand (localStorage for prefs only)
-│           ├── i18n.ts          # Bangla + English
-│           ├── utils.ts         # formatters, crypto, color, diff
-│           ├── ai-client.ts    # browser-side AI helpers
-│           └── server-store.ts # server-side key/session store
-└── scripts/
-    └── gen-icons.js             # PWA icon generator
+│           ├── types.ts           # shared types
+│           ├── db.ts              # IndexedDB layer
+│           ├── store.ts           # Zustand (localStorage for prefs only)
+│           ├── i18n.ts            # Bangla + English
+│           ├── utils.ts           # formatters, crypto, color, diff
+│           ├── ai-client.ts       # browser-side AI helpers
+│           ├── server-store.ts    # server-side key store
+│           └── github-pat-store.ts # PAT session store
+├── docs/
+│   ├── SECURITY.md                # full security model
+│   ├── TESTING.md                 # manual test checklist
+│   ├── GITHUB_UPLOAD.md           # step-by-step publish guide
+│   ├── APK_BUILD.md                # Bubblewrap TWA guide
+│   └── screenshots/               # README screenshots
+├── scripts/
+│   ├── gen-icons.js               # PWA icon generator
+│   └── gen-hero.js                # README hero banner generator
+├── .env.example                   # template (no secrets)
+├── README.md · LICENSE · package.json · bun.lock
 ```
 
----
+<br/>
 
-## Setup (local development)
+## 🚢 Deployment
 
-1. **Install dependencies**
-   ```bash
-   bun install
-   ```
-
-2. **Configure environment variables** — copy `.env.example` to `.env.local` and fill in only the providers you want to use. **Never commit** `.env.local` to git.
-
-   The simplest path to a working AI: get a free key from https://openrouter.ai/keys and put it in `OPENROUTER_API_KEY=` in `.env.local`. The app auto-registers an OpenRouter provider on the backend with the `nvidia/nemotron-3.5-lightning:free` model. You can switch to any of these free models in Settings → AI Providers:
-   - `nvidia/nemotron-3.5-lightning:free`
-   - `cohere/north-mini-code:free`
-   - `google/gemma-4-26b-a4b-it:free`
-   - `google/gemma-4-31b-it:free`
-   - `nvidia/nemotron-3-ultra-550b-a55b:free`
-
-3. **Run the dev server**
-   ```bash
-   bun run dev
-   ```
-
-4. Open `http://localhost:3000` in your browser.
-
-5. To use a different AI provider (OpenAI, Gemini, Anthropic, custom OpenAI-compatible):
-   - Set the corresponding env var (`OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`) — it will auto-register on the backend, OR
-   - Open **Settings → AI Providers → Add**, choose a kind, paste your key. The key is sent to the backend once and stored only there.
-
-6. To set up GitHub (two options):
-   - **Option A — Personal Access Token (recommended, no setup needed):** In the app's GitHub section, paste a token from https://github.com/settings/tokens/new with scopes `repo` and `read:user`. The token is sent to the backend once, validated, and stored in an HTTP-only session cookie.
-   - **Option B — OAuth App:** Create a GitHub OAuth App at https://github.com/settings/developers, set the callback URL to `http://localhost:3000/api/github/oauth/callback`, set the env vars `GITHUB_OAUTH_CLIENT_ID` + `GITHUB_OAUTH_CLIENT_SECRET` + `GITHUB_OAUTH_REDIRECT_URI` in `.env.local`, then open **GitHub → Connect with GitHub OAuth**.
-
----
-
-## Deployment
-
-### Frontend
-The Next.js app (frontend + backend routes) is designed to be deployed as a single unit to any Node-compatible host. **GitHub Pages cannot run a Node.js backend** — do not attempt to deploy the AI proxy or GitHub OAuth there. Deploy to Vercel, Netlify (with functions), Render, Railway, Fly.io, or any container host that runs Next.js.
+The Next.js app (frontend + backend routes) deploys as a single unit to any Node-compatible host. **GitHub Pages cannot run a Node.js backend** — use Vercel, Netlify (with functions), Render, Railway, or Fly.io instead.
 
 ```bash
 bun run build
 bun run start
 ```
 
-### Backend (separate hosting — optional)
-If you prefer to split frontend and backend:
-- Keep the routes under `src/app/api/*` as a separate Next.js project, or port them to a standalone Express/Fastify server.
-- Update the frontend's `fetch()` calls to point to your backend's public base URL (do **not** keep API keys in frontend code).
-- Configure CORS so only your deployed frontend origin can call the backend.
+Don't forget to set the env vars (`OPENROUTER_API_KEY`, `APP_PUBLIC_URL`, etc.) on your hosting provider's dashboard.
 
-### Environment variables
+<br/>
 
-Copy `.env.example` and fill in only what you need. See `.env.example` for the full list with no real secrets.
+## 🧪 Testing
 
----
+A manual test checklist is in [`docs/TESTING.md`](docs/TESTING.md) — covers every tool, every navigation item, theme switching, language switching, IndexedDB persistence, AI configuration errors, GitHub authentication, commit/push, offline, mobile, desktop.
 
-## Security
+A scripted test for all 10 AI modes is in [`scripts/test-ai-modes.sh`](scripts/test-ai-modes.sh) — runs real calls against the configured AI provider and verifies each mode returns a response.
 
-- API keys are **never** stored in browser localStorage or IndexedDB. They are sent once to the backend via HTTPS and held in server-side memory (demo) — production must use a secret manager or KMS-encrypted database.
-- GitHub OAuth tokens are stored in an HTTP-only session cookie on the server side; the browser only sees a boolean "connected" status and the user's public profile.
-- The service worker **never** caches `/api/*` responses or any request that could carry credentials.
-- The JWT Decoder tool explicitly states that the signature is **not** verified.
-- The QR Scanner requires HTTPS and a user-granted camera permission.
-- Auto Push requires explicit opt-in, has allowed-repo and allowed-branch lists, protects `main` by default, and has an emergency OFF switch on the GitHub page and in Settings.
-- Manual confirmation is required for every file deletion, version restore, and "main" branch push.
+<br/>
 
-### Reporting a security issue
-Please open a private advisory via GitHub Security Advisories rather than a public issue.
+## ⚠️ Known limitations
 
----
+- Backend key/session stores are in-memory (good for demo + small deployments; production should use a real secret manager)
+- The JS / CSS / HTML / XML / YAML formatters are intentionally lightweight (no full AST) — pipe through prettier locally for production-grade formatting
+- Monaco Editor intentionally omitted to keep the bundle small for low-powered Android (touch-friendly textarea editor used instead)
+- Some free OpenRouter reasoning models (e.g. `nemotron-3.5-lightning:free`) sometimes return empty visible responses when the entire token budget is consumed by reasoning — DEVKIT shows a clear hint in that case and the default `max_tokens` is set to 2500 to minimize this
+- QR Scanner requires HTTPS + camera permission; on desktop without a camera, it shows a clear error rather than faking a scan
 
-## Testing
+<br/>
 
-A lightweight test plan is documented in `docs/TESTING.md`. Key flows verified during development:
+## 📜 Credits
 
-- All 30 tools produce real output for valid input and clear errors for invalid input.
-- Navigation between all 6 sections works on mobile and desktop.
-- Theme switching updates the document `data-theme` and persists across reloads.
-- Language switching updates UI labels (English ↔ Bangla).
-- IndexedDB projects, files, versions persist across reloads.
-- Backup export → wipe → backup import round-trips correctly.
-- AI section shows the "not configured" banner until a provider with a key exists.
-- GitHub section shows the "not configured" banner until env vars are set.
-- Service worker registers and serves the offline shell.
+| | |
+|---|---|
+| **App name** | DEVKIT |
+| **Tagline** | Build Smarter. Code Better. |
+| **Version** | 1.0.0 |
+| **Developer** | Nayon Ahamed |
+| **Brand** | NCX / NayonCodeX |
+| **License** | MIT |
 
-Automated tests are minimal in this release — see `docs/TESTING.md` for the manual checklist. To add unit tests, the recommended setup is Vitest + Testing Library (not bundled here to keep the demo lean).
+NCX / NayonCodeX branding appears only in the About section and the footer — not in the main application UI.
 
----
+<br/>
 
-## Known limitations
+## 📄 License
 
-- The backend key store is in-memory: keys are lost when the server restarts. For production, replace `src/lib/devkit/server-store.ts` with a durable secret backend.
-- The GitHub session store is also in-memory. Same recommendation applies.
-- QR Scanner requires `getUserMedia` (HTTPS only); on desktop testing without a camera, it will report an error rather than fake a scan.
-- The JavaScript / CSS / XML / HTML / YAML formatters are intentionally lightweight (no full AST). For production-grade formatting, pipe through prettier locally.
-- Monaco Editor is intentionally not included to keep the bundle small on low-powered Android phones; the workspace uses a touch-friendly textarea editor with tab-to-indent.
-- Auto Push is implemented as a manual confirmation flow; full background auto-push requires a backend job queue (not included).
-- The `.env.example` does not contain any real secrets.
+MIT © 2026 Nayon Ahmed (NCX / NayonCodeX). See [LICENSE](LICENSE).
 
----
+<br/>
 
-## Android PWA installation
+<div align="center">
 
-1. Open the deployed app in Chrome on Android.
-2. Tap the menu (⋮) → **Add to Home screen** → **Install**.
-3. The app launches as a standalone PWA. To package as a TWA (Trusted Web Activity) for the Play Store, use [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) with this app's deployment URL.
+<sub>Built with ❤️ by <b>Nayon Ahamed</b> · <a href="https://github.com/NayonCodeX">NCX / NayonCodeX</a></sub>
 
----
+<sub>If DEVKIT helps you, please ⭐ the repo — it helps others find it.</sub>
 
-## License
-
-MIT © Nayon Ahmed (NCX / NayonCodeX). See `LICENSE`.
+</div>
