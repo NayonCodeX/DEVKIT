@@ -30,25 +30,42 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — keep .env.example (template, no secrets) but ignore everything else
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+# Do NOT ignore the example template:
+!.env.example
 
 # vercel
 .vercel
 
-
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-local-*
-.claude
-.z-ai-config
+
+# logs
 *.log
 dev.log
 dev.out.log
-test
-prompt
-
 server.log
-# Skills directory
+
+# misc local config
+.claude
+.z-ai-config
+local-*
+
+# Skills directory (sandbox-only, do not ship)
 /skills/
+
+# Local-only scratch files at the repo root.
+# Anchored with / so they do NOT match nested dirs like src/app/api/ai/test/
+/test
+/prompt
+
+# Sandbox-only infrastructure (not part of DEVKIT)
+/.zscripts/
+/db/
+/Caddyfile
