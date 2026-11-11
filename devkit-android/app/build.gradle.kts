@@ -40,11 +40,14 @@ android {
         viewBinding = true
     }
 
-    // Use a portable JDK 17 with jlink (the sandbox's JRE-only install lacks jlink)
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
-        }
+    // By default, AGP excludes asset files / folders starting with `_`
+    // (considered private). Our Next.js static export uses `_next/`
+    // which holds all JS/CSS — must be included.
+    androidResources {
+        ignoreAssetsPattern = ""
+    }
+    aaptOptions {
+        noCompress("html", "js", "css", "json", "svg", "woff2", "txt")
     }
 }
 
