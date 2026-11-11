@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 }
 
 interface DispatchArgs {
-  kind: 'openai' | 'gemini' | 'anthropic' | 'custom';
+  kind: 'openai' | 'gemini' | 'anthropic' | 'openrouter' | 'custom';
   endpoint: string;
   model: string;
   apiKey: string;
@@ -70,6 +70,7 @@ interface DispatchArgs {
 async function dispatchToProvider(args: DispatchArgs): Promise<{ text: string; usage?: unknown }> {
   if (args.kind === 'gemini') return callGemini(args);
   if (args.kind === 'anthropic') return callAnthropic(args);
+  if (args.kind === 'openrouter') return callOpenRouter(args);
   return callOpenAICompatible(args); // openai + custom
 }
 
@@ -80,6 +81,37 @@ async function callOpenAICompatible(args: DispatchArgs): Promise<{ text: string;
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${args.apiKey}`,
+    },
+    body: JSON.stringify({
+      model: args.model,
+      messages: [
+        { role: 'system', content: args.systemPrompt },
+        { role: 'user', content: args.userPrompt },
+      ],
+      max_tokens: args.maxTokens ?? 1500,
+    }),
+  });
+  if (!res.ok) {
+    const t = await res.text();
+    throw new Error(`Upstream ${res.status}: ${t.slice(0, 500)}`);
+  }
+  const data = await res.json();
+  const text = data.choices?.[0]?.message?.content ?? '';
+  return { text, usage: data.usage };
+}
+
+// OpenRouter uses the OpenAI-compatible chat/completions endpoint, but
+// recommends (and for some free models requires) the HTTP-Referer and
+// X-Title headers so it can attribute usage to your app.
+async function callOpenRouter(args: DispatchArgs): Promise<{ text: string; usage?: unknown }> {
+  const url = `${args.endpoint.replace(/\/$/, '')}/chat/completions`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${args.apiKey}`,
+      'HTTP-Referer': process.env.APP_PUBLIC_URL ?? 'https://devkit.app',
+      'X-Title': 'DEVKIT',
     },
     body: JSON.stringify({
       model: args.model,

@@ -114,6 +114,13 @@ DEVKIT/
 
 2. **Configure environment variables** — copy `.env.example` to `.env.local` and fill in only the providers you want to use. **Never commit** `.env.local` to git.
 
+   The simplest path to a working AI: get a free key from https://openrouter.ai/keys and put it in `OPENROUTER_API_KEY=` in `.env.local`. The app auto-registers an OpenRouter provider on the backend with the `nvidia/nemotron-3.5-lightning:free` model. You can switch to any of these free models in Settings → AI Providers:
+   - `nvidia/nemotron-3.5-lightning:free`
+   - `cohere/north-mini-code:free`
+   - `google/gemma-4-26b-a4b-it:free`
+   - `google/gemma-4-31b-it:free`
+   - `nvidia/nemotron-3-ultra-550b-a55b:free`
+
 3. **Run the dev server**
    ```bash
    bun run dev
@@ -121,11 +128,9 @@ DEVKIT/
 
 4. Open `http://localhost:3000` in your browser.
 
-5. To set up an AI provider:
-   - Open **Settings → AI Providers → Add**
-   - Choose a kind (OpenAI / Gemini / Anthropic / custom)
-   - Enter the endpoint and model
-   - Paste your API key — it is sent to the backend once, stored in server memory, and never returned to the browser.
+5. To use a different AI provider (OpenAI, Gemini, Anthropic, custom OpenAI-compatible):
+   - Set the corresponding env var (`OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`) — it will auto-register on the backend, OR
+   - Open **Settings → AI Providers → Add**, choose a kind, paste your key. The key is sent to the backend once and stored only there.
 
 6. To set up GitHub:
    - Create a GitHub OAuth App at https://github.com/settings/developers

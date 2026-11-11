@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useApp } from '@/lib/devkit/store';
+import { useSyncProviders } from '@/lib/devkit/use-sync-providers';
 import { t } from '@/lib/devkit/i18n';
 import {
   Home as HomeIcon,
@@ -58,6 +59,9 @@ export default function Home() {
   const setActiveTool = useApp((s) => s.setActiveTool);
   const providers = useApp((s) => s.providers);
   const githubConnected = useApp((s) => s.githubConnected);
+
+  // Sync env-registered AI providers from the backend on first mount.
+  useSyncProviders();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
   const [showResults, setShowResults] = useState(false);

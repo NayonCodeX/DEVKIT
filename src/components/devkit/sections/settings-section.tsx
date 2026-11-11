@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useApp } from '@/lib/devkit/store';
+import { useSyncProviders } from '@/lib/devkit/use-sync-providers';
 import { t } from '@/lib/devkit/i18n';
 import type { AIProvider, ThemeId, Language } from '@/lib/devkit/types';
 import { testProvider } from '@/lib/devkit/ai-client';
@@ -56,13 +57,27 @@ export function SettingsSection() {
   const [apiKey, setApiKey] = useState('');
   const [showKey, setShowKey] = useState(false);
 
+  // The hook in page.tsx already syncs providers globally; call it here too
+  // in case the user opens the app directly on the Settings route via a
+  // future deep link. Idempotent — safe to call multiple times.
+  useSyncProviders();
+
+  // Suggested OpenRouter free models — these are the ones the developer wants pre-registered.
+  const OPENROUTER_FREE_MODELS = [
+    'nvidia/nemotron-3.5-lightning:free',
+    'cohere/north-mini-code:free',
+    'google/gemma-4-26b-a4b-it:free',
+    'google/gemma-4-31b-it:free',
+    'nvidia/nemotron-3-ultra-550b-a55b:free',
+  ];
+
   function startAddProvider() {
     setEditProvider({
       id: crypto.randomUUID(),
       name: '',
-      kind: 'openai',
-      endpoint: 'https://api.openai.com/v1',
-      model: 'gpt-4o-mini',
+      kind: 'openrouter',
+      endpoint: 'https://openrouter.ai/api/v1',
+      model: OPENROUTER_FREE_MODELS[0],
       enabled: true,
       isDefault: providers.length === 0,
       createdAt: Date.now(),
@@ -250,18 +265,23 @@ export function SettingsSection() {
           </p>
           {providers.length === 0 ? (
             <div className="rounded-md border border-dashed border-border p-4 text-center text-sm text-muted-foreground">
-              No providers configured. Click "Add" to set up OpenAI, Gemini, Anthropic, or any OpenAI-compatible endpoint.
+              No providers configured. Click "Add" to set up OpenRouter (free models), OpenAI, Gemini, Anthropic, or any OpenAI-compatible endpoint.
+              <br />
+              <span className="text-xs">Tip: Set <code className="font-mono">OPENROUTER_API_KEY</code> in <code className="font-mono">.env.local</code> and restart the server to auto-register an OpenRouter provider.</span>
             </div>
           ) : (
             <div className="space-y-2">
-              {providers.map((p) => (
+              {providers.map((p) => {
+                const isEnv = p.id.startsWith('env-');
+                return (
                 <div key={p.id} className="rounded-lg border border-border p-3 space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm flex items-center gap-1.5">
+                      <div className="font-medium text-sm flex items-center gap-1.5 flex-wrap">
                         {p.name}
                         {p.isDefault && <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary uppercase">default</span>}
                         {!p.enabled && <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">disabled</span>}
+                        {isEnv && <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 uppercase">env</span>}
                       </div>
                       <div className="text-xs text-muted-foreground font-mono truncate">
                         {p.kind} · {p.endpoint} · {p.model}
@@ -273,19 +293,27 @@ export function SettingsSection() {
                           <span className="text-amber-600">⚠ No API key set on backend</span>
                         )}
                       </div>
+                      {isEnv && (
+                        <div className="text-[11px] text-muted-foreground mt-1">
+                          Registered from a server env var. Edit <code className="font-mono">.env.local</code> to change it.
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     <Button size="sm" variant="outline" onClick={() => testConn(p)}><TestTube2 className="h-3.5 w-3.5 mr-1" /> Test</Button>
-                    <Button size="sm" variant="ghost" onClick={() => startEditProvider(p)}>Edit</Button>
+                    {!isEnv && <Button size="sm" variant="ghost" onClick={() => startEditProvider(p)}>Edit</Button>}
                     {!p.isDefault && <Button size="sm" variant="ghost" onClick={() => setDefaultProvider(p.id)}>Make default</Button>}
-                    {p.hasKey && <Button size="sm" variant="ghost" onClick={() => revokeKey(p)}>Revoke key</Button>}
-                    <Button size="sm" variant="ghost" onClick={() => deleteProvider(p)} className="text-destructive">
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </Button>
+                    {p.hasKey && !isEnv && <Button size="sm" variant="ghost" onClick={() => revokeKey(p)}>Revoke key</Button>}
+                    {!isEnv && (
+                      <Button size="sm" variant="ghost" onClick={() => deleteProvider(p)} className="text-destructive">
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -309,12 +337,14 @@ export function SettingsSection() {
                         openai: { endpoint: 'https://api.openai.com/v1', model: 'gpt-4o-mini' },
                         gemini: { endpoint: 'https://generativelanguage.googleapis.com', model: 'gemini-flash-latest' },
                         anthropic: { endpoint: 'https://api.anthropic.com', model: 'claude-3-5-sonnet-latest' },
+                        openrouter: { endpoint: 'https://openrouter.ai/api/v1', model: OPENROUTER_FREE_MODELS[0] },
                         custom: { endpoint: '', model: '' },
                       };
                       setEditProvider({ ...editProvider, kind, ...defaults[kind] });
                     }}
                     className="w-full border border-border rounded-md px-2 py-1.5 text-sm bg-card"
                   >
+                    <option value="openrouter">OpenRouter (free models)</option>
                     <option value="openai">OpenAI</option>
                     <option value="gemini">Google Gemini</option>
                     <option value="anthropic">Anthropic</option>
@@ -325,9 +355,24 @@ export function SettingsSection() {
                   <Label className="text-xs">Endpoint (base URL)</Label>
                   <Input value={editProvider.endpoint} onChange={(e) => setEditProvider({ ...editProvider, endpoint: e.target.value })} className="font-mono" />
                 </div>
-                <div>
+                <div className="sm:col-span-2">
                   <Label className="text-xs">Model</Label>
-                  <Input value={editProvider.model} onChange={(e) => setEditProvider({ ...editProvider, model: e.target.value })} className="font-mono" />
+                  <Input value={editProvider.model} onChange={(e) => setEditProvider({ ...editProvider, model: e.target.value })} className="font-mono mb-2" />
+                  {editProvider.kind === 'openrouter' && (
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="text-xs text-muted-foreground self-center mr-1">Free models:</span>
+                      {OPENROUTER_FREE_MODELS.map((m) => (
+                        <button
+                          key={m}
+                          type="button"
+                          onClick={() => setEditProvider({ ...editProvider, model: m })}
+                          className={`text-xs px-2 py-1 rounded-md border font-mono ${editProvider.model === m ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border hover:border-primary/40'}`}
+                        >
+                          {m}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
               <div>

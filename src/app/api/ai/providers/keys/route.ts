@@ -10,7 +10,7 @@ export const runtime = 'nodejs';
 export async function POST(req: NextRequest) {
   const body = (await req.json().catch(() => ({}))) as {
     providerId?: string;
-    kind?: 'openai' | 'gemini' | 'anthropic' | 'custom';
+    kind?: 'openai' | 'gemini' | 'anthropic' | 'openrouter' | 'custom';
     key?: string;
     meta?: AIProvider;
   };

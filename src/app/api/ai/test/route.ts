@@ -15,19 +15,42 @@ export async function POST(req: NextRequest) {
   if (!stored) return NextResponse.json({ error: 'No API key set for this provider.' }, { status: 401 });
 
   try {
-    const res = await fetch(`${meta.endpoint.replace(/\/$/, '')}/${stored.kind === 'gemini' ? 'v1beta/models/' + encodeURIComponent(meta.model) + ':generateContent' : (stored.kind === 'anthropic' ? 'v1/messages' : 'chat/completions')}${stored.kind === 'gemini' ? '?key=' + encodeURIComponent(stored.key) : ''}`, {
-      method: 'POST',
-      headers: stored.kind === 'anthropic'
-        ? { 'Content-Type': 'application/json', 'x-api-key': stored.key, 'anthropic-version': '2023-06-01' }
-        : { 'Content-Type': 'application/json', Authorization: `Bearer ${stored.key}` },
-      body: JSON.stringify(
-        stored.kind === 'gemini'
-          ? { contents: [{ role: 'user', parts: [{ text: 'Say OK.' }] }] }
-          : stored.kind === 'anthropic'
-            ? { model: meta.model, max_tokens: 10, messages: [{ role: 'user', content: 'Say OK.' }] }
-            : { model: meta.model, max_tokens: 10, messages: [{ role: 'user', content: 'Say OK.' }] },
-      ),
-    });
+    let res: Response;
+    if (stored.kind === 'gemini') {
+      res = await fetch(`${meta.endpoint.replace(/\/$/, '')}/v1beta/models/${encodeURIComponent(meta.model)}:generateContent?key=${encodeURIComponent(stored.key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: 'Say OK.' }] }] }),
+      });
+    } else if (stored.kind === 'anthropic') {
+      res = await fetch(`${meta.endpoint.replace(/\/$/, '')}/v1/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': stored.key,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({ model: meta.model, max_tokens: 10, messages: [{ role: 'user', content: 'Say OK.' }] }),
+      });
+    } else if (stored.kind === 'openrouter') {
+      res = await fetch(`${meta.endpoint.replace(/\/$/, '')}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${stored.key}`,
+          'HTTP-Referer': process.env.APP_PUBLIC_URL ?? 'https://devkit.app',
+          'X-Title': 'DEVKIT',
+        },
+        body: JSON.stringify({ model: meta.model, max_tokens: 10, messages: [{ role: 'user', content: 'Say OK.' }] }),
+      });
+    } else {
+      // openai + custom
+      res = await fetch(`${meta.endpoint.replace(/\/$/, '')}/chat/completions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${stored.key}` },
+        body: JSON.stringify({ model: meta.model, max_tokens: 10, messages: [{ role: 'user', content: 'Say OK.' }] }),
+      });
+    }
     if (!res.ok) {
       const t = await res.text();
       return NextResponse.json({ error: `Upstream ${res.status}: ${t.slice(0, 300)}` }, { status: 502 });

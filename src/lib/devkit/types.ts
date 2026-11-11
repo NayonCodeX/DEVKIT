@@ -14,7 +14,7 @@ export type NavSection =
 export interface AIProvider {
   id: string;
   name: string;
-  kind: 'openai' | 'gemini' | 'anthropic' | 'custom';
+  kind: 'openai' | 'gemini' | 'anthropic' | 'openrouter' | 'custom';
   endpoint: string;
   model: string;
   enabled: boolean;
