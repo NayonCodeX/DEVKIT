@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.DEVKIT" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/devkit_purple</item>
+        <item name="colorPrimaryVariant">@color/devkit_purple</item>
+        <item name="colorOnPrimary">@color/devkit_white</item>
+        <item name="colorSecondary">@color/devkit_cyan</item>
+        <item name="colorOnSecondary">@color/devkit_navy</item>
+        <item name="android:statusBarColor">@color/devkit_navy</item>
+        <item name="android:navigationBarColor">@color/devkit_navy</item>
+        <item name="android:windowBackground">@color/devkit_navy</item>
+        <item name="android:colorBackground">@color/devkit_navy</item>
+    </style>
+</resources>

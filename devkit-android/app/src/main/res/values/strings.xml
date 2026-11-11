@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DEVKIT</string>
+    <string name="app_tagline">Build Smarter. Code Better.</string>
+    <string name="loading">Loading DEVKIT…</string>
+    <string name="no_internet">No internet connection. DEVKIT online features require internet.</string>
+    <string name="retry">Retry</string>
+    <string name="url_error">Could not load DEVKIT. Check your connection and try again.</string>
+</resources>

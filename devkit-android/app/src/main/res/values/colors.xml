@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="devkit_navy">#0D0F1F</color>
+    <color name="devkit_purple">#9B7CFF</color>
+    <color name="devkit_cyan">#4DD4FF</color>
+    <color name="devkit_white">#FFFFFF</color>
+</resources>
