@@ -29,9 +29,11 @@ A professional, mobile-first developer toolkit + AI coding workspace, built as a
 
 ### 📲 Download the Android APK
 
-[**DEVKIT-v1.0.0.apk**](https://github.com/NayonCodeX/DEVKIT/releases/download/v1.0.0/DEVKIT-v1.0.0.apk) — 5.89 MB · Native Kotlin WebView app · Install on any Android 7.0+ phone
+[**DEVKIT-v1.0.0.apk**](https://github.com/NayonCodeX/DEVKIT/releases/download/v1.0.0/DEVKIT-v1.0.0.apk) — 5.95 MB · Native Kotlin WebView app · Install on any Android 7.0+ phone
 
-SHA256: `65fcedcd758020d750e08f1b1dae84c11cf764097639da8b0b02202a5261cc0f`
+SHA256: `1db08c9a2c556f0485ade0eafab7097a8c4bb8b6db00c1ce94aea04e3ba08a51`
+
+**Works 100% offline after install** — all 30 tools, workspace, themes, and Bangla/English UI are bundled inside the APK. AI and GitHub sections show their "not configured" banners (they need a backend, which isn't included in the offline build).
 
 After installing, allow "Install from unknown sources" for your browser/file manager in Android settings, then tap the downloaded APK to install.
 

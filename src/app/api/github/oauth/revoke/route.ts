@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { clearSession, getSession } from '../callback/route';
 
 export const runtime = 'nodejs';
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   const sid = req.cookies.get('devkit_github_session')?.value ?? null;

@@ -7,6 +7,7 @@ import { setProviderMeta } from '@/lib/devkit/server-store';
 import type { AIProvider } from '@/lib/devkit/types';
 
 export const runtime = 'nodejs';
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   const meta = (await req.json().catch(() => null)) as AIProvider | null;

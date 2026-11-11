@@ -69,3 +69,15 @@ local-*
 /.zscripts/
 /db/
 /Caddyfile
+
+# Static export build output (regenerated with `bun run build`)
+/out/
+
+# API routes backup (used by scripts/toggle-api-routes.sh during build)
+/.api-backup/
+
+# Android APK build artifacts (regenerated with gradle)
+/devkit-android/app/build/
+/devkit-android/.gradle/
+/devkit-android/build/
+/devkit-android/local.properties

@@ -14,6 +14,7 @@ import { setPat } from '@/lib/devkit/github-pat-store';
 import { setSession } from '../oauth/callback/route';
 
 export const runtime = 'nodejs';
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   const { token } = (await req.json().catch(() => ({}))) as { token?: string };

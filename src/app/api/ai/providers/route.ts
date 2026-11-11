@@ -7,6 +7,7 @@ import { NextResponse } from 'next/server';
 import { listProviderMeta } from '@/lib/devkit/server-store';
 
 export const runtime = 'nodejs';
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const providers = listProviderMeta().map((p) => ({

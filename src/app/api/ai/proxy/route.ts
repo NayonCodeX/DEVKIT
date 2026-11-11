@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getKey, getProviderMeta } from '@/lib/devkit/server-store';
 
 export const runtime = 'nodejs';
+export const dynamic = "force-dynamic";
 
 interface ProxyBody {
   providerId: string;

@@ -85,11 +85,12 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        // Load DEVKIT URL
-        if (!isOnline()) {
+        // Load DEVKIT — local (bundled) or remote (deployment URL)
+        val targetUrl = if (LOCAL_MODE) LOCAL_ASSET_URL else DEVKIT_URL
+        if (!LOCAL_MODE && !isOnline()) {
             showError()
         } else {
-            binding.webView.loadUrl(DEVKIT_URL)
+            binding.webView.loadUrl(targetUrl)
         }
     }
 
@@ -99,8 +100,12 @@ class MainActivity : AppCompatActivity() {
             javaScriptEnabled = true
             domStorageEnabled = true            // IndexedDB workspace + tool history
             databaseEnabled = true
-            allowFileAccess = false             // security: no local file access from web content
-            allowContentAccess = false
+            // For LOCAL_MODE: allow loading from file:///android_asset/.
+            // For REMOTE_MODE: this is harmless because the loaded content
+            // is served over HTTPS and our network_security_config.xml
+            // restricts outbound traffic to system-trusted CAs.
+            allowFileAccess = true
+            allowContentAccess = true
             mediaPlaybackRequiresUserGesture = false
             cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
             javaScriptCanOpenWindowsAutomatically = false
@@ -181,12 +186,23 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         /**
-         * The DEVKIT deployment URL. Change this to your real deployment URL
-         * after you deploy DEVKIT to Vercel / Netlify / Render / Fly.io / etc.
+         * The DEVKIT web app is bundled inside this APK as a static export
+         * under `app/src/main/assets/www/`. Loading it from
+         * `file:///android_asset/www/index.html` means the entire app runs
+         * offline — all 30 tools, workspace, themes, and Bangla/English
+         * UI work without any internet connection.
          *
-         * GitHub Pages cannot run the DEVKIT backend, so do NOT use a
-         * *.github.io URL here.
+         * AI and GitHub features require a backend (the API routes are
+         * not included in the static export), so those sections will
+         * show their "not configured" banners in the APK. This is honest
+         * behaviour, not a bug.
+         *
+         * To switch the APK to load from a remote deployment instead,
+         * change `LOCAL_MODE` to `false` and set `DEVKIT_URL` to your
+         * deployment URL (e.g. `https://your-name.vercel.app`).
          */
+        private const val LOCAL_MODE = true
+        private const val LOCAL_ASSET_URL = "file:///android_asset/www/index.html"
         private const val DEVKIT_URL = "https://devkit-ncx.vercel.app"
     }
 }

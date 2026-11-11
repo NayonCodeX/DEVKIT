@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '../oauth/callback/route';
 
 export const runtime = 'nodejs';
+export const dynamic = "force-dynamic";
 
 interface CommitBody {
   owner: string;

@@ -6,6 +6,7 @@ import { setKey, deleteKey, setProviderMeta } from '@/lib/devkit/server-store';
 import type { AIProvider } from '@/lib/devkit/types';
 
 export const runtime = 'nodejs';
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   const body = (await req.json().catch(() => ({}))) as {

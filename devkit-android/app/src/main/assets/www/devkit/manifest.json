@@ -1,0 +1,26 @@
+{
+  "name": "DEVKIT — Build Smarter. Code Better.",
+  "short_name": "DEVKIT",
+  "description": "Professional developer toolkit + AI coding workspace. JSON formatter, JWT decoder, SHA hashing, UUID generator, AI assistant, code workspace, and GitHub integration.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0d0f1f",
+  "theme_color": "#0d0f1f",
+  "categories": ["developer", "productivity", "utilities"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    { "src": "/devkit/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/devkit/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/devkit/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    { "name": "Developer Tools", "url": "/?section=tools", "description": "Open the toolkit" },
+    { "name": "AI Assistant", "url": "/?section=ai", "description": "Open the AI assistant" },
+    { "name": "Workspace", "url": "/?section=workspace", "description": "Open the code workspace" }
+  ]
+}

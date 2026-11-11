@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getKey, getProviderMeta } from '@/lib/devkit/server-store';
 
 export const runtime = 'nodejs';
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   const { providerId } = (await req.json().catch(() => ({}))) as { providerId?: string };

@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
+export const dynamic = "force-dynamic";
 
 // In-memory session store (single-process demo). Production: use a real
 // session store (Redis, signed JWT, or database-backed sessions).
