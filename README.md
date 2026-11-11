@@ -15,14 +15,25 @@ A professional, mobile-first developer toolkit + AI coding workspace, built as a
 ![Version](https://img.shields.io/badge/version-1.0.0-9b7cff?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-4dd4ff?style=flat-square)
 ![PWA](https://img.shields.io/badge/PWA-ready-22c55e?style=flat-square)
-![APK](https://img.shields.io/badge/APK-TWA%20ready-f59e0b?style=flat-square)
+![APK](https://img.shields.io/badge/APK-download-f59e0b?style=flat-square)
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?style=flat-square)
+![Kotlin](https://img.shields.io/badge/Kotlin-1.9-7f52ff?style=flat-square)
 ![Tailwind](https://img.shields.io/badge/Tailwind-4-06b6d4?style=flat-square)
 
 <br/>
 
 **30 real developer tools · 10 AI modes · In-app GitHub push · IndexedDB workspace · 5 themes · Bangla + English**
+
+<br/>
+
+### 📲 Download the Android APK
+
+[**DEVKIT-v1.0.0.apk**](https://github.com/NayonCodeX/DEVKIT/releases/download/v1.0.0/DEVKIT-v1.0.0.apk) — 5.89 MB · Native Kotlin WebView app · Install on any Android 7.0+ phone
+
+SHA256: `65fcedcd758020d750e08f1b1dae84c11cf764097639da8b0b02202a5261cc0f`
+
+After installing, allow "Install from unknown sources" for your browser/file manager in Android settings, then tap the downloaded APK to install.
 
 <br/>
 
