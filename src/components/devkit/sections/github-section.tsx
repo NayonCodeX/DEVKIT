@@ -21,6 +21,8 @@ import {
   Loader2,
   Check,
   X,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 
 export function GithubSection() {
@@ -43,6 +45,8 @@ export function GithubSection() {
   const [commitLink, setCommitLink] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
+  const [patInput, setPatInput] = useState('');
+  const [showPat, setShowPat] = useState(false);
 
   useEffect(() => {
     // Try to fetch session status on mount
@@ -93,6 +97,37 @@ export function GithubSection() {
         // Open the OAuth URL in a new window/tab.
         window.location.href = data.url;
       }
+    } catch (e) {
+      setErr((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Alternative to OAuth: paste a Personal Access Token (PAT). The PAT is sent
+  // to the backend ONCE, validated against the GitHub /user endpoint, and
+  // then stored only on the server (in an HTTP-only session cookie).
+  async function connectWithPat() {
+    setErr(null);
+    setLoading(true);
+    try {
+      if (!patInput.trim()) {
+        setErr('Paste a GitHub Personal Access Token first.');
+        return;
+      }
+      const res = await fetch('/api/github/connect-pat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: patInput.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErr(data.error ?? 'Failed to connect with this token.');
+        return;
+      }
+      setPatInput('');
+      await refreshSession();
+      pushNotification({ title: 'GitHub connected via PAT', body: `Connected as ${data.user?.login ?? 'unknown'}` });
     } catch (e) {
       setErr((e as Error).message);
     } finally {
@@ -219,22 +254,57 @@ export function GithubSection() {
       <div className="px-3 sm:px-6 py-4 max-w-3xl mx-auto w-full devkit-fade-in">
         <h1 className="text-xl sm:text-2xl font-bold flex items-center gap-2 mb-2"><Github className="h-6 w-6" /> GitHub</h1>
         <Card className="border-amber-500/40 bg-amber-500/5">
-          <CardContent className="py-5 flex items-start gap-3">
-            <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
-            <div className="space-y-2">
-              <div className="font-medium text-amber-700 dark:text-amber-400">GitHub is not connected</div>
-              <p className="text-sm text-muted-foreground">
-                To use GitHub features you must configure GitHub OAuth on the backend (set <code>GITHUB_OAUTH_CLIENT_ID</code>, <code>GITHUB_OAUTH_CLIENT_SECRET</code>, and <code>GITHUB_OAUTH_REDIRECT_URI</code>).
-                We never store tokens in the browser or expose them in frontend code. Authentication happens through the backend.
+          <CardContent className="py-5 space-y-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div className="space-y-2">
+                <div className="font-medium text-amber-700 dark:text-amber-400">GitHub is not connected</div>
+                <p className="text-sm text-muted-foreground">
+                  Pick one of two ways to connect — both keep your token on the backend, never in the browser.
+                </p>
+              </div>
+            </div>
+
+            {/* Option 1: PAT — works in any environment, no public callback URL needed */}
+            <div className="rounded-lg border border-border bg-card p-3 space-y-2">
+              <div className="font-medium text-sm">Option 1 · Personal Access Token (recommended for single-user apps)</div>
+              <p className="text-xs text-muted-foreground">
+                Create a token at <a href="https://github.com/settings/tokens/new" target="_blank" rel="noreferrer" className="text-primary underline">github.com/settings/tokens/new</a> with scopes <code>repo</code> and <code>read:user</code>.
+                Paste it here — it is sent once to the backend, validated against the GitHub API, and stored only on the server.
               </p>
-              <Button onClick={connect} disabled={loading}>
-                <Github className="h-4 w-4 mr-1.5" /> Connect with GitHub
-              </Button>
-              {err && <div className="text-sm text-destructive mt-2">{err}</div>}
-              <Button variant="ghost" size="sm" onClick={() => setSection('settings')}>
-                <Settings className="h-3.5 w-3.5 mr-1" /> Open settings
+              <div className="flex gap-2">
+                <Input
+                  type={showPat ? 'text' : 'password'}
+                  value={patInput}
+                  onChange={(e) => setPatInput(e.target.value)}
+                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                  className="font-mono"
+                />
+                <Button variant="ghost" size="icon" onClick={() => setShowPat(!showPat)}>
+                  {showPat ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+                <Button onClick={connectWithPat} disabled={loading}>
+                  {loading ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : null}
+                  Connect
+                </Button>
+              </div>
+            </div>
+
+            {/* Option 2: OAuth — needs env config + public callback URL */}
+            <div className="rounded-lg border border-border bg-card p-3 space-y-2">
+              <div className="font-medium text-sm">Option 2 · GitHub OAuth App</div>
+              <p className="text-xs text-muted-foreground">
+                Best for multi-user deployments. Requires <code>GITHUB_OAUTH_CLIENT_ID</code>, <code>GITHUB_OAUTH_CLIENT_SECRET</code>, and <code>GITHUB_OAUTH_REDIRECT_URI</code> in the backend env, and a public callback URL.
+              </p>
+              <Button onClick={connect} disabled={loading} variant="outline">
+                <Github className="h-4 w-4 mr-1.5" /> Connect with GitHub OAuth
               </Button>
             </div>
+
+            {err && <div className="text-sm text-destructive mt-2">{err}</div>}
+            <Button variant="ghost" size="sm" onClick={() => setSection('settings')}>
+              <Settings className="h-3.5 w-3.5 mr-1" /> Open settings
+            </Button>
           </CardContent>
         </Card>
       </div>

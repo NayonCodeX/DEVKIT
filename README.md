@@ -132,11 +132,9 @@ DEVKIT/
    - Set the corresponding env var (`OPENAI_API_KEY`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`) — it will auto-register on the backend, OR
    - Open **Settings → AI Providers → Add**, choose a kind, paste your key. The key is sent to the backend once and stored only there.
 
-6. To set up GitHub:
-   - Create a GitHub OAuth App at https://github.com/settings/developers
-   - Set the callback URL to `http://localhost:3000/api/github/oauth/callback` (or your deployment URL)
-   - Put the client id and secret in `.env.local`
-   - Open **GitHub → Connect with GitHub**
+6. To set up GitHub (two options):
+   - **Option A — Personal Access Token (recommended, no setup needed):** In the app's GitHub section, paste a token from https://github.com/settings/tokens/new with scopes `repo` and `read:user`. The token is sent to the backend once, validated, and stored in an HTTP-only session cookie.
+   - **Option B — OAuth App:** Create a GitHub OAuth App at https://github.com/settings/developers, set the callback URL to `http://localhost:3000/api/github/oauth/callback`, set the env vars `GITHUB_OAUTH_CLIENT_ID` + `GITHUB_OAUTH_CLIENT_SECRET` + `GITHUB_OAUTH_REDIRECT_URI` in `.env.local`, then open **GitHub → Connect with GitHub OAuth**.
 
 ---
 

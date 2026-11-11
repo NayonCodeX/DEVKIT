@@ -105,6 +105,11 @@ async function callOpenAICompatible(args: DispatchArgs): Promise<{ text: string;
 // X-Title headers so it can attribute usage to your app.
 async function callOpenRouter(args: DispatchArgs): Promise<{ text: string; usage?: unknown }> {
   const url = `${args.endpoint.replace(/\/$/, '')}/chat/completions`;
+  // OpenRouter free reasoning models (e.g. nvidia/nemotron-3.5-lightning:free)
+  // spend a lot of tokens on internal reasoning. The default 1500-token cap
+  // is often consumed entirely by reasoning, leaving an empty visible response.
+  // We bump to 2500 by default unless the caller asked for more.
+  const maxTokens = args.maxTokens ?? 2500;
   const res = await fetch(url, {
     method: 'POST',
     headers: {
@@ -119,7 +124,7 @@ async function callOpenRouter(args: DispatchArgs): Promise<{ text: string; usage
         { role: 'system', content: args.systemPrompt },
         { role: 'user', content: args.userPrompt },
       ],
-      max_tokens: args.maxTokens ?? 1500,
+      max_tokens: maxTokens,
     }),
   });
   if (!res.ok) {

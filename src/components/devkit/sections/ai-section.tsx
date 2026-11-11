@@ -59,19 +59,28 @@ export function AISection() {
         userPrompt,
       });
       if (res.ok) {
-        setOutput(res.text);
-        const entry = {
-          id: crypto.randomUUID(),
-          providerId: defaultProvider.id,
-          providerName: defaultProvider.name,
-          mode: mode.id,
-          prompt: userPrompt.slice(0, 5000),
-          response: res.text.slice(0, 20000),
-          status: 'success' as const,
-          createdAt: Date.now(),
-        };
-        await aiHistory.add(entry).catch(() => {});
-        setHistory((h) => [{ ...entry, id: entry.id }, ...h].slice(0, 50));
+        if (!res.text || !res.text.trim()) {
+          // Some reasoning-heavy free models (e.g. nemotron) sometimes return
+          // an empty visible response when the entire token budget was used
+          // for internal reasoning. Show a clear hint instead of a blank page.
+          setError('The model returned an empty response. This usually means the model spent its entire token budget on internal reasoning. Try again, or switch to a different model in Settings → AI Providers.');
+          setOutput('');
+        } else {
+          setOutput(res.text);
+          setError(null);
+          const entry = {
+            id: crypto.randomUUID(),
+            providerId: defaultProvider.id,
+            providerName: defaultProvider.name,
+            mode: mode.id,
+            prompt: userPrompt.slice(0, 5000),
+            response: res.text.slice(0, 20000),
+            status: 'success' as const,
+            createdAt: Date.now(),
+          };
+          await aiHistory.add(entry).catch(() => {});
+          setHistory((h) => [{ ...entry, id: entry.id }, ...h].slice(0, 50));
+        }
       } else {
         setError(res.error ?? 'Unknown error');
         await aiHistory.add({

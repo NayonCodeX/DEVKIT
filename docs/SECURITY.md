@@ -23,11 +23,13 @@ The following rules are enforced throughout the codebase.
 - The proxy resolves `providerId` → backend provider meta + stored key, then dispatches to the right provider (OpenAI / Gemini / Anthropic / custom OpenAI-compatible).
 - The provider's raw response is streamed back as text. No credential is ever in the response.
 
-## 4. GitHub OAuth tokens live in an HTTP-only session cookie
-- `GET /api/github/oauth/start` returns the GitHub authorize URL.
-- `GET /api/github/oauth/callback` exchanges the code for an access token and stores it server-side, keyed by a random session id. The session id is set as an HTTP-only `SameSite=Lax` cookie named `devkit_github_session`.
-- All `/api/github/*` routes use the cookie to resolve the session server-side. The browser never sees the access token.
-- `POST /api/github/oauth/revoke` clears the session and best-effort asks GitHub to revoke the token.
+## 4. GitHub tokens live in an HTTP-only session cookie
+Two ways to connect:
+- **PAT (Personal Access Token):** User pastes a token in the app. It is sent ONCE to the backend (`POST /api/github/connect-pat`), validated against the GitHub `/user` endpoint, then stored only on the server keyed by a random session id. The session id is set as an HTTP-only `SameSite=Lax` cookie named `devkit_github_session`. The browser never sees the token again after the request.
+- **OAuth:** Same end result via a redirect flow. `GET /api/github/oauth/start` returns the authorize URL, `GET /api/github/oauth/callback` exchanges the code for an access token and stores it the same way as PAT.
+
+All `/api/github/*` routes use the cookie to resolve the session server-side. The browser never sees the access token in any JavaScript-readable form.
+`POST /api/github/oauth/revoke` (or just disconnecting from the UI) clears the session.
 
 ## 5. The service worker never caches sensitive responses
 - The service worker ignores any URL starting with `/api/`. Those requests always go straight to the network.

@@ -304,7 +304,7 @@ export default function Home() {
       </header>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col pt-1">
         {section === 'home' && <HomeSection />}
         {section === 'tools' && <ToolsSection />}
         {section === 'ai' && <AISection />}
