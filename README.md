@@ -12,7 +12,7 @@ A professional, mobile-first developer toolkit + AI coding workspace, built as a
 
 <br/>
 
-![Version](https://img.shields.io/badge/version-1.0.0-9b7cff?style=flat-square)
+![Version](https://img.shields.io/badge/version-1.0.1-9b7cff?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-4dd4ff?style=flat-square)
 ![PWA](https://img.shields.io/badge/PWA-ready-22c55e?style=flat-square)
 ![APK](https://img.shields.io/badge/APK-download-f59e0b?style=flat-square)
@@ -29,13 +29,19 @@ A professional, mobile-first developer toolkit + AI coding workspace, built as a
 
 ### 📲 Download the Android APK
 
-[**DEVKIT-v1.0.0.apk**](https://github.com/NayonCodeX/DEVKIT/releases/download/v1.0.0/DEVKIT-v1.0.0.apk) — 7.37 MB · Native Kotlin WebView app · Install on any Android 7.0+ phone
+[**DEVKIT-v1.0.1.apk**](https://github.com/NayonCodeX/DEVKIT/releases/download/v1.0.1/DEVKIT-v1.0.1.apk) — 7.37 MB · Native Kotlin WebView app · Install on any Android 7.0+ phone
 
-SHA256: `e43f4cb1b03a0a09d569327c964c68e524f0507df15bce0b53adc2b4e01f03b6`
+SHA256: `ee4eba3ea4fc73117621fdfd03f04139959c1156ad83d95c755b75e8bd142566`
 
 **Works 100% offline after install** — all 30 tools, workspace, themes, and Bangla/English UI are bundled inside the APK. AI and GitHub sections show their "not configured" banners (they need a backend, which isn't included in the offline build).
 
-After installing, allow "Install from unknown sources" for your browser/file manager in Android settings, then tap the downloaded APK to install.
+**v1.0.1 — Mobile Scroll & Layout Fix:**
+- ✅ App now scrolls smoothly — SwipeRefreshLayout no longer hijacks vertical touch gestures
+- ✅ Page fills the entire screen between status bar and navigation bar (no more tiny strip)
+- ✅ Window insets applied so content is never hidden behind system bars
+- ✅ Viewport meta set to `viewport-fit=cover` for full-width mobile rendering
+
+After installing, allow "Install from unknown sources" for your browser/file manager in Android settings, then tap the downloaded APK to install. **If Android says "App not installed", uninstall the previous DEVKIT version first** — that fixes it 99% of the time.
 
 <br/>
 
