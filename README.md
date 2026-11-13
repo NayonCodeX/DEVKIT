@@ -29,24 +29,28 @@ A professional, mobile-first developer toolkit + AI coding workspace, built as a
 
 ### 📲 Download the Android APK
 
-[**DEVKIT-v1.0.3.apk**](https://github.com/NayonCodeX/DEVKIT/releases/download/v1.0.3/DEVKIT-v1.0.3.apk) — 6.47 MB · Release-signed native Kotlin WebView app · Android 7.0+ (API 24+)
+<p align="center">
+  <img src="docs/screenshots/07-logo.png" alt="DEVKIT </> logo" width="180"/>
+  <br/>
+  <sub><b>The new <code>&lt;/&gt;</code> logo</b> · v1.0.3</sub>
+</p>
+
+**[DEVKIT-v1.0.3.apk](https://github.com/NayonCodeX/DEVKIT/releases/download/v1.0.3/DEVKIT-v1.0.3.apk)** — `6.47 MB` · release-signed · Android 7.0+ (API 24+)
 
 SHA256: `26eca1f7147b92aa74d3b8bfdede29c4884430262329d686590b5dac6961a8f1`
 
-**Works 100% offline after install** — all 30 tools, workspace, themes, and Bangla/English UI are bundled inside the APK. AI and GitHub sections show their "not configured" banners (they need a backend, which isn't included in the offline build).
+- ✅ **Works 100% offline after install** — all 30 tools, workspace, themes, and Bangla/English UI are bundled inside the APK.
+- ✅ **Opens on every phone** — uses Google's `WebViewAssetLoader` to serve the PWA under `https://appassets.androidplatform.net/` so all Next.js relative paths resolve correctly. (This was the root cause of the v1.0.1/v1.0.2 "opens and immediately closes" crash.)
+- ✅ **Release-signed** with a 10,000-day keystore — future v1.0.4+ updates install in-place over v1.0.3 without uninstalling first.
+- ✅ **New `<>` logo** — explicit angle-bracket glyphs on a navy→purple gradient, with adaptive icon support for Android 8+.
 
-**v1.0.3 — Reliability-first rebuild + new `<>` logo:**
-- 🎨 **New logo** — explicit `< / >` angle-bracket symbols (the universal "code" glyph) on a navy→purple gradient with adaptive icon support (Android 8+)
-- 🔧 **WebViewAssetLoader** (Google-recommended) — serves the bundled PWA under `https://appassets.androidplatform.net/` so all Next.js `_next/...` relative paths resolve correctly on **every** phone. This was the real reason v1.0.1/v1.0.2 crashed on launch — `file://` URLs don't support relative sub-resource paths the way an HTTPS origin does.
-- 🔧 **Release-signed APK** with a 10,000-day keystore — future updates install in-place (no more "App not installed" when upgrading)
-- 🔧 **Removed `applicationIdSuffix = ".debug"`** — package name is now exactly `com.nayoncodex.devkit` (clean install, no conflict with previous versions)
-- 🔧 **Single consolidated WebChromeClient** — alert/confirm/geolocation/file-chooser all wired up once (no duplicate assignment)
-- 🔧 **Removed `setLayerType(HARDWARE)`** — was crashing on some older/lower-end phones during the first accelerated draw
-- 🔧 **`cacheMode = LOAD_DEFAULT`** — works reliably with the asset loader
-- 🔧 **Defensive try/catch** in every JS callback so a failed `JsResult` never crashes the host activity
-- 🔧 Removed `usesCleartextTraffic=false` + `networkSecurityConfig` (no longer needed — asset loader is HTTPS)
+**Install steps:**
+1. **Uninstall any previous DEVKIT version** (v1.0.0 / v1.0.1 / v1.0.2) first — Settings → Apps → DEVKIT → Uninstall. (Older versions used the `com.nayoncodex.devkit.debug` package name; v1.0.3 uses the clean `com.nayoncodex.devkit`.)
+2. Download `DEVKIT-v1.0.3.apk` from the link above.
+3. Tap the APK → allow "Install from unknown sources" if prompted.
+4. Open DEVKIT — it stays open and loads the full app.
 
-After installing, allow "Install from unknown sources" for your browser/file manager in Android settings, then tap the downloaded APK to install. **This version installs cleanly over v1.0.2** because the package name is now `com.nayoncodex.devkit` (the `.debug` suffix is gone). If you still see "App not installed", uninstall any previous DEVKIT version first.
+See the [v1.0.3 release notes](https://github.com/NayonCodeX/DEVKIT/releases/tag/v1.0.3) for the complete reliability changelog.
 
 <br/>
 
@@ -262,36 +266,43 @@ Two ways to connect — both keep tokens on the backend, never in the browser:
 - AI + GitHub settings
 - Privacy controls
 - Backup & restore
-- About (DEVKIT, v1.0.0, Build Smarter. Code Better., Nayon Ahamed, NCX / NayonCodeX)
+- About (DEVKIT, v1.0.3, Build Smarter. Code Better., Nayon Ahamed, NCX / NayonCodeX)
 
 <br/>
 
-## 📱 PWA & APK
+## 📱 PWA & Android APK
 
-### PWA (works today)
+### PWA (web app)
 - Web App Manifest at `/devkit/manifest.json`
 - Service worker at `/devkit-sw.js` (stale-while-revalidate for shell, network-first for navigation, **never** caches `/api/*` or credentials)
 - Installable on Android, iOS, and desktop
 - Offline app shell works after first load
 
-### APK (TWA via Bubblewrap — ready to ship)
+### Android APK (native Kotlin WebView — v1.0.3)
 
-DEVKIT is structured to be packaged as a Trusted Web Activity (TWA) for the Play Store. Once you deploy the app to a public HTTPS URL:
+The Android app is a **native Kotlin WebView wrapper** that bundles the entire DEVKIT PWA inside the APK as a static export under `assets/www/`. It runs **100% offline** — every tool, theme, and the Bangla/English UI work without any internet connection. AI and GitHub features require a backend (their API routes are not included in the static export), so those sections show their "not configured" banners.
+
+| | |
+|---|---|
+| **Source** | [`devkit-android/`](devkit-android/) — Gradle 8.7 + AGP 8.5.2 + Kotlin 1.9 |
+| **Min SDK** | 24 (Android 7.0) |
+| **Target SDK** | 34 (Android 14) |
+| **Package** | `com.nayoncodex.devkit` |
+| **Signing** | APK Signature Scheme v2 (release-signed, 10,000-day keystore) |
+| **WebView** | androidx.webkit `WebViewAssetLoader` — serves `assets/www/` under `https://appassets.androidplatform.net/` so all Next.js relative paths resolve correctly |
+| **Logo** | `</>` angle-bracket glyph (cyan + white) on a navy→purple gradient, with adaptive icon XML for Android 8+ (foreground + background + monochrome layers) |
+
+**Why a native WebView and not a Bubblewrap TWA?** A TWA loads the PWA from a remote HTTPS URL, so it requires the app to be deployed and online. The native WebView bundles the entire app inside the APK, so it works fully offline — which is what most DEVKIT users want (30 tools + workspace always available, no server needed).
+
+**Build it yourself** (full guide in [`docs/APK_BUILD.md`](docs/APK_BUILD.md)):
 
 ```bash
-# Install Bubblewrap once
-npm i -g @bubblewrap/cli
-
-# Initialize from the deployed manifest
-bubblewrap init --manifest https://your-deployment.example.com/devkit/manifest.json
-
-# Build the APK / AAB
-bubblewrap build
+cd devkit-android
+./gradlew :app:assembleRelease
+# Output: app/build/outputs/apk/release/app-release.apk
 ```
 
-The output `app-release-signed.apk` can be uploaded to the Play Store. The TWA approach means the entire app is still served from your HTTPS URL — no separate native build to maintain.
-
-See [`docs/APK_BUILD.md`](docs/APK_BUILD.md) for the complete step-by-step guide.
+The release keystore is **not** committed (it is a private signing key). To sign your own build, generate a keystore and point `signingConfigs.release` in `app/build.gradle.kts` at it.
 
 <br/>
 
@@ -341,13 +352,14 @@ See [`docs/SECURITY.md`](docs/SECURITY.md) for the full model.
 | Layer | Tech |
 |-------|------|
 | Framework | Next.js 16 (App Router) · React 19 |
-| Language | TypeScript 5 |
+| Language | TypeScript 5 (web) · Kotlin 1.9 (Android) |
 | Styling | Tailwind CSS 4 · shadcn/ui · Lucide icons |
 | State | Zustand (client) · IndexedDB (persistence) |
 | Backend | Next.js API routes (Node runtime) — same deployment |
 | Crypto | Web Crypto (SubtleCrypto) · `crypto.randomUUID()` |
 | QR | `qrcode` (generation) · `jsqr` (scanning) |
 | PWA | Web App Manifest + custom service worker |
+| Android | Gradle 8.7 · AGP 8.5.2 · androidx.webkit WebViewAssetLoader · release-signed APK |
 
 <br/>
 
@@ -385,15 +397,26 @@ DEVKIT/
 │           ├── ai-client.ts       # browser-side AI helpers
 │           ├── server-store.ts    # server-side key store
 │           └── github-pat-store.ts # PAT session store
+├── devkit-android/                # Native Kotlin WebView APK source
+│   ├── app/
+│   │   ├── build.gradle.kts       # AGP config + signingConfig
+│   │   └── src/main/
+│   │       ├── assets/www/        # Next.js static export (bundled in APK)
+│   │       ├── java/com/nayoncodex/devkit/MainActivity.kt
+│   │       └── res/               # mipmap-* (icons), drawable, themes, layout
+│   ├── settings.gradle.kts         # Aliyun mirror to dodge Maven rate-limit
+│   └── devkit-release.keystore    # NOT committed (gitignored, private key)
 ├── docs/
 │   ├── SECURITY.md                # full security model
 │   ├── TESTING.md                 # manual test checklist
 │   ├── GITHUB_UPLOAD.md           # step-by-step publish guide
-│   ├── APK_BUILD.md                # Bubblewrap TWA guide
-│   └── screenshots/               # README screenshots
+│   ├── APK_BUILD.md                # Native Kotlin WebView APK build guide
+│   └── screenshots/               # README screenshots + new logo
 ├── scripts/
 │   ├── gen-icons.js               # PWA icon generator
-│   └── gen-hero.js                # README hero banner generator
+│   ├── gen-hero.js                # README hero banner generator
+│   ├── generate_logo.py           # </> launcher icon generator (all densities)
+│   └── test-ai-modes.sh           # scripted AI mode test
 ├── .env.example                   # template (no secrets)
 ├── README.md · LICENSE · package.json · bun.lock
 ```
@@ -437,7 +460,7 @@ A scripted test for all 10 AI modes is in [`scripts/test-ai-modes.sh`](scripts/t
 |---|---|
 | **App name** | DEVKIT |
 | **Tagline** | Build Smarter. Code Better. |
-| **Version** | 1.0.0 |
+| **Version** | 1.0.3 |
 | **Developer** | Nayon Ahamed |
 | **Brand** | NCX / NayonCodeX |
 | **License** | MIT |
