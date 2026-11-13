@@ -12,7 +12,7 @@ A professional, mobile-first developer toolkit + AI coding workspace, built as a
 
 <br/>
 
-![Version](https://img.shields.io/badge/version-1.0.2-9b7cff?style=flat-square)
+![Version](https://img.shields.io/badge/version-1.0.3-9b7cff?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-4dd4ff?style=flat-square)
 ![PWA](https://img.shields.io/badge/PWA-ready-22c55e?style=flat-square)
 ![APK](https://img.shields.io/badge/APK-download-f59e0b?style=flat-square)
@@ -29,22 +29,24 @@ A professional, mobile-first developer toolkit + AI coding workspace, built as a
 
 ### 📲 Download the Android APK
 
-[**DEVKIT-v1.0.2.apk**](https://github.com/NayonCodeX/DEVKIT/releases/download/v1.0.2/DEVKIT-v1.0.2.apk) — 7.59 MB · Native Kotlin WebView app · Install on any Android 7.0+ phone
+[**DEVKIT-v1.0.3.apk**](https://github.com/NayonCodeX/DEVKIT/releases/download/v1.0.3/DEVKIT-v1.0.3.apk) — 6.47 MB · Release-signed native Kotlin WebView app · Android 7.0+ (API 24+)
 
-SHA256: `2246a56615912cdb7fbc6d9a5ce576cc03b949ebbe8fb76868ab1e3c679e4ecc`
+SHA256: `26eca1f7147b92aa74d3b8bfdede29c4884430262329d686590b5dac6961a8f1`
 
 **Works 100% offline after install** — all 30 tools, workspace, themes, and Bangla/English UI are bundled inside the APK. AI and GitHub sections show their "not configured" banners (they need a backend, which isn't included in the offline build).
 
-**v1.0.2 — New logo + reliability fixes:**
-- 🎨 **New app logo** — a stylized `</>` chevron + `D` monogram on a navy→purple gradient with adaptive icon support (Android 8+)
-- ✅ Fixed the duplicate `webChromeClient` assignment that was overriding dialog handlers (alert/confirm now work)
-- ✅ Cache mode = `DEFAULT` (was `LOAD_NO_CACHE`) so `file://` loads work reliably on every device
-- ✅ Removed `setLayerType(HARDWARE)` that crashed on some older phones
-- ✅ Defensive WebView setup order: settings → clients → load URL
-- ✅ Smooth scrolling, window insets applied so content lives between status bar and nav bar
-- ✅ Viewport meta `viewport-fit=cover` for full-width mobile rendering
+**v1.0.3 — Reliability-first rebuild + new `<>` logo:**
+- 🎨 **New logo** — explicit `< / >` angle-bracket symbols (the universal "code" glyph) on a navy→purple gradient with adaptive icon support (Android 8+)
+- 🔧 **WebViewAssetLoader** (Google-recommended) — serves the bundled PWA under `https://appassets.androidplatform.net/` so all Next.js `_next/...` relative paths resolve correctly on **every** phone. This was the real reason v1.0.1/v1.0.2 crashed on launch — `file://` URLs don't support relative sub-resource paths the way an HTTPS origin does.
+- 🔧 **Release-signed APK** with a 10,000-day keystore — future updates install in-place (no more "App not installed" when upgrading)
+- 🔧 **Removed `applicationIdSuffix = ".debug"`** — package name is now exactly `com.nayoncodex.devkit` (clean install, no conflict with previous versions)
+- 🔧 **Single consolidated WebChromeClient** — alert/confirm/geolocation/file-chooser all wired up once (no duplicate assignment)
+- 🔧 **Removed `setLayerType(HARDWARE)`** — was crashing on some older/lower-end phones during the first accelerated draw
+- 🔧 **`cacheMode = LOAD_DEFAULT`** — works reliably with the asset loader
+- 🔧 **Defensive try/catch** in every JS callback so a failed `JsResult` never crashes the host activity
+- 🔧 Removed `usesCleartextTraffic=false` + `networkSecurityConfig` (no longer needed — asset loader is HTTPS)
 
-After installing, allow "Install from unknown sources" for your browser/file manager in Android settings, then tap the downloaded APK to install. **If Android says "App not installed", uninstall the previous DEVKIT version first** — that fixes it 99% of the time.
+After installing, allow "Install from unknown sources" for your browser/file manager in Android settings, then tap the downloaded APK to install. **This version installs cleanly over v1.0.2** because the package name is now `com.nayoncodex.devkit` (the `.debug` suffix is gone). If you still see "App not installed", uninstall any previous DEVKIT version first.
 
 <br/>
 

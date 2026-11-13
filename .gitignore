@@ -81,3 +81,7 @@ local-*
 /devkit-android/.gradle/
 /devkit-android/build/
 /devkit-android/local.properties
+
+# Release keystore — DO NOT commit (private signing key)
+**/devkit-release.keystore
+*.keystore

@@ -1,23 +1,29 @@
 #!/usr/bin/env python3
 """
-Generate the new DEVKIT app launcher icon.
+Generate the new DEVKIT v1.0.3 launcher icon — explicit '<>' symbols.
 
-Design:
-  - Square 1024x1024 master, with adaptive-icon safe zone (the inner ~70%
-    is what shows on most launchers; outer 15% may be clipped).
-  - Background: deep navy (#0D0F1F) → purple (#9B7CFF) diagonal gradient.
-  - Foreground: a stylised "</>" chevron + a "D" monogram, rendered in
-    cyan (#4DD4FF) with a subtle glow.
-  - Rounded mask is applied by Android at runtime (adaptive icon), but
-    we also produce a legacy rounded version for older API levels.
+Design brief (from user):
+  "logo ta chenge koro <> emon diyo"
+  → Use explicit angle-bracket symbols < and > (not just a chevron).
 
-Outputs PNG launcher icons at every mipmap density:
-  mdpi 48, hdpi 72, xhdpi 96, xxhdpi 144, xxxhdpi 192
-plus a 512x512 play-store icon and the foreground/background layers
-for adaptive icons.
+The icon shows three things:
+  1. A bold "<" on the left
+  2. A bold "/" in the middle (a slash — code-style)
+  3. A bold ">" on the right
+  Together they read "</>"  — the universal symbol for "code".
+
+Behind the </> sits a soft "D" monogram (very low opacity) so the
+brand name DEVKIT is still hinted at, without competing with the </>.
+
+Background: deep navy (#0D0F1F) → purple (#9B7CFF) diagonal gradient
+with a soft cyan radial highlight in the upper-left.
+
+Outputs PNG launcher icons at every mipmap density plus a 512x512
+play-store icon and adaptive-icon foreground + background layers.
 """
 import os
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+import math
+from PIL import Image, ImageDraw, ImageFilter
 
 # Output directories
 RES = "/home/z/my-project/devkit-android/app/src/main/res"
@@ -49,101 +55,110 @@ def draw_background(size):
     px = img.load()
     for y in range(size):
         for x in range(size):
-            # Diagonal gradient from top-left (navy) to bottom-right (purple)
             t = (x + y) / (2 * size)
             base = lerp(NAVY, PURPLE, t * 0.85)
-            # Soft radial cyan glow centered at (35%, 30%)
             cx, cy = size * 0.35, size * 0.30
-            dist = ((x - cx) ** 2 + (y - cy) ** 2) ** 0.5
+            dist = math.hypot(x - cx, y - cy)
             glow = max(0.0, 1.0 - dist / (size * 0.55))
             base = lerp(base, CYAN, glow * 0.18)
             px[x, y] = base
     return img
 
 
+def draw_angle_bracket(d, cx, cy, char, size, color, sw):
+    """
+    Draw an angle bracket '<' or '>' as two thick lines forming a
+    chevron. cx, cy = centre of the bracket.
+    """
+    h = size * 0.16   # half-height of the bracket
+    w = size * 0.07   # horizontal depth of the bracket
+    if char == "<":
+        top    = (cx + w, cy - h)
+        tip    = (cx - w, cy)
+        bottom = (cx + w, cy + h)
+    else:  # ">"
+        top    = (cx - w, cy - h)
+        tip    = (cx + w, cy)
+        bottom = (cx - w, cy + h)
+
+    def thick_line(p1, p2, width, fill):
+        d.line([p1, p2], fill=fill, width=width, joint="curve")
+        r = width // 2
+        d.ellipse([p1[0]-r, p1[1]-r, p1[0]+r, p1[1]+r], fill=fill)
+        d.ellipse([p2[0]-r, p2[1]-r, p2[0]+r, p2[1]+r], fill=fill)
+
+    thick_line(top, tip, sw, color)
+    thick_line(tip, bottom, sw, color)
+
+
+def draw_slash(d, cx, cy, size, color, sw):
+    """Draw a forward slash '/' as a thick diagonal line."""
+    h = size * 0.12
+    top    = (cx + size * 0.03, cy - h)
+    bottom = (cx - size * 0.03, cy + h)
+    d.line([top, bottom], fill=color, width=sw, joint="curve")
+    r = sw // 2
+    d.ellipse([top[0]-r, top[1]-r, top[0]+r, top[1]+r], fill=color)
+    d.ellipse([bottom[0]-r, bottom[1]-r, bottom[0]+r, bottom[1]+r], fill=color)
+
+
 def draw_foreground(size, bg):
-    """Draw the </>  + D monogram on top of the background."""
+    """Draw the </>  + faint D monogram on top of the background."""
     img = bg.convert("RGBA")
     overlay = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     d = ImageDraw.Draw(overlay)
 
     cx, cy = size / 2, size / 2
 
-    # ---- The "</>" chevron made of three strokes ----
-    # Stroke width scales with size
-    sw = int(size * 0.045)
-    # The chevron sits in the upper-middle of the icon
-    chevron_y = cy - size * 0.12
-    # Left "<"  — two lines meeting at a point
-    left_outer = (cx - size * 0.22, chevron_y - size * 0.08)
-    left_tip   = (cx - size * 0.10, chevron_y)
-    left_inner = (cx - size * 0.22, chevron_y + size * 0.08)
-    # Right ">" — mirror
-    right_outer = (cx + size * 0.22, chevron_y - size * 0.08)
-    right_tip   = (cx + size * 0.10, chevron_y)
-    right_inner = (cx + size * 0.22, chevron_y + size * 0.08)
+    # ---- Faint "D" monogram (background hint) ----
+    mono_alpha = 32  # very faint
+    d_top    = cy - size * 0.30
+    d_bottom = cy + size * 0.30
+    d_left   = cx - size * 0.16
+    d_right  = cx + size * 0.20
+    bar_w    = int(size * 0.07)
+    monogram_color = WHITE + (mono_alpha,)
 
-    chevron_color = CYAN + (255,)
-
-    # Draw with thick lines, round joints
-    def thick_line(p1, p2, width, color):
-        d.line([p1, p2], fill=color, width=width, joint="curve")
-        # Round caps
-        r = width // 2
-        d.ellipse([p1[0]-r, p1[1]-r, p1[0]+r, p1[1]+r], fill=color)
-        d.ellipse([p2[0]-r, p2[1]-r, p2[0]+r, p2[1]+r], fill=color)
-
-    thick_line(left_outer, left_tip, sw, chevron_color)
-    thick_line(left_tip,  left_inner, sw, chevron_color)
-    thick_line(right_outer, right_tip, sw, chevron_color)
-    thick_line(right_tip,  right_inner, sw, chevron_color)
-
-    # ---- The "D" monogram below the chevron ----
-    # Draw a stylized "D" using a thick arc + vertical bar
-    d_top    = cy + size * 0.05
-    d_bottom = cy + size * 0.32
-    d_left   = cx - size * 0.10
-    d_right  = cx + size * 0.18
-    bar_w    = int(size * 0.055)
-
-    monogram_color = WHITE + (255,)
-
-    # Vertical bar of the D
     d.rectangle(
         [d_left, d_top, d_left + bar_w, d_bottom],
         fill=monogram_color,
     )
-    # Curved part of the D — draw an arc as a pie slice then crop
     arc_box_left  = d_left
     arc_box_right = d_right + (d_right - d_left - bar_w) // 2 + bar_w
     arc_box_top    = d_top - bar_w // 2
     arc_box_bottom = d_bottom + bar_w // 2
     arc_box = [arc_box_left, arc_box_top, arc_box_right, arc_box_bottom]
-
-    # Draw the arc as a thick stroke
     arc_img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     arc_d = ImageDraw.Draw(arc_img)
     arc_d.arc(arc_box, start=270, end=90, fill=monogram_color, width=bar_w)
-    # Make the arc thicker / smoother by drawing it twice with offset
     arc_d.arc([arc_box[0]+1, arc_box[1]+1, arc_box[2]+1, arc_box[3]+1],
               start=270, end=90, fill=monogram_color, width=bar_w)
-    # Crop the left half of the arc (we only want the right curve of the D)
     arc_crop = arc_img.crop((d_left + bar_w, 0, size, size))
     overlay.paste(arc_crop, (int(d_left + bar_w), 0), arc_crop)
 
-    # ---- Add a subtle outer glow on the cyan chevron ----
-    glow = overlay.filter(ImageFilter.GaussianBlur(radius=size * 0.012))
-    # Composite glow under the sharp overlay
+    # ---- The </>  symbol, centred ----
+    sw = int(size * 0.055)   # stroke width scales with size
+    bracket_color = CYAN + (255,)
+    slash_color   = WHITE + (255,)
+
+    spacing = size * 0.16
+    left_cx  = cx - spacing
+    slash_cx = cx
+    right_cx = cx + spacing
+
+    draw_angle_bracket(d, left_cx,  cy, "<", size, bracket_color, sw)
+    draw_slash(d,           slash_cx, cy, size, slash_color,   sw)
+    draw_angle_bracket(d, right_cx, cy, ">", size, bracket_color, sw)
+
+    # ---- Soft outer glow on the cyan brackets ----
+    glow = overlay.filter(ImageFilter.GaussianBlur(radius=size * 0.010))
     final = Image.alpha_composite(img, glow)
     final = Image.alpha_composite(final, overlay)
 
     return final
 
 
-def make_round_mask(size, radius=None):
-    """A rounded-rectangle mask (for legacy round icons)."""
-    if radius is None:
-        radius = size // 2  # full circle for ic_launcher_round
+def make_round_mask(size):
     mask = Image.new("L", (size, size), 0)
     md = ImageDraw.Draw(mask)
     md.ellipse([0, 0, size - 1, size - 1], fill=255)
@@ -162,10 +177,8 @@ def main():
     for density, px in DENSITIES.items():
         out_dir = os.path.join(RES, density)
         os.makedirs(out_dir, exist_ok=True)
-        # Square launcher icon
         icon = master_rgb.resize((px, px), Image.LANCZOS)
         icon.save(os.path.join(out_dir, "ic_launcher.png"), "PNG")
-        # Rounded launcher icon (full circle mask)
         round_icon = master_rgb.resize((px, px), Image.LANCZOS)
         mask = make_round_mask(px)
         rounded = Image.new("RGB", (px, px), NAVY)
@@ -179,30 +192,12 @@ def main():
     playstore.save(playstore_path, "PNG")
     print(f"  ✓ ic_launcher_playstore.png (512x512)")
 
-    # 4. Adaptive icon layers (foreground on transparent, background solid)
-    # Android adaptive icons are 108dp = 432px at xxxhdpi.
+    # 4. Adaptive icon layers
     adaptive_size = 432
-    fg_layer = Image.new("RGBA", (adaptive_size, adaptive_size), (0, 0, 0, 0))
-    # Draw the foreground (chevron + D) at the centre, scaled down slightly
-    # so it stays inside the safe zone.
-    fg_scaled = master.resize((adaptive_size, adaptive_size), Image.LANCZOS)
-    # We only want the foreground glyph — redraw it on transparent
-    fg_only = draw_foreground(adaptive_size, Image.new("RGB",
-                                                       (adaptive_size, adaptive_size),
-                                                       (0, 0, 0)))
-    # The draw_foreground composites onto bg; rebuild as transparent:
-    # Simpler: take the master alpha and use the chevron + D as opaque,
-    # everything else transparent. Since draw_foreground blends with bg,
-    # we approximate by thresholding the alpha against background colour.
-    # For simplicity and quality, just save the full master as the
-    # foreground layer (Android will mask it).
-    fg_layer = fg_scaled
+    fg_layer = master.resize((adaptive_size, adaptive_size), Image.LANCZOS)
     fg_layer.save(os.path.join(RES, "mipmap-xxxhdpi", "ic_launcher_foreground.png"), "PNG")
-
-    # Background layer (solid gradient)
     bg_layer = draw_background(adaptive_size)
     bg_layer.save(os.path.join(RES, "mipmap-xxxhdpi", "ic_launcher_background.png"), "PNG")
-
     print(f"  ✓ Adaptive icon layers (foreground + background, {adaptive_size}x{adaptive_size})")
     print()
     print("All launcher icons generated successfully.")
